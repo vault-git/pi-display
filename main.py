@@ -5,9 +5,11 @@ import cairosvg
 import util
 import constants as const
 import weather_data as weather
+import waveshare.epd7in5_V2 as epd7in5
+
 from io import BytesIO
 from datetime import datetime
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageOps
 
 def draw_ui(draw_context):
     dist = 20
@@ -29,8 +31,30 @@ def get_and_draw_dht_data(draw_context, xy = (0, 0)):
                       font=const.FONT_40,
                       fill=1)
 
+def draw_to_display_and_sleep(image):
+    try:
+        # init the display
+        epd = epd7in5.EPD()
+        epd.init()
+        # epd.Clear()
+
+        # draw the image to the display
+        epd.display(epd.getbuffer(image))
+
+        # go to deep sleep mode
+        epd.sleep()
+
+    except IOError as e:
+        logging.info(e)
+
+    except KeyboardInterrupt:
+        logging.info("ctrl + c:")
+        epd7in5.epdconfig.module_exit()
+        exit()
+
+
 def main():
-    img = Image.new('1', (const.SCREEN_W, const.SCREEN_H), 0)
+    img = Image.new('1', (epd7in5.EPD_WIDTH, epd7in5.EPD_HEIGHT), 0)
     draw = ImageDraw.Draw(img)
 
     draw_ui(draw)
@@ -38,7 +62,13 @@ def main():
     get_and_draw_dht_data(draw, (530, 65))
     img.paste(weather.create_weather_image(), box=(0, 250))
 
-    img.show()
+    img = img.convert('L')
+    img = ImageOps.invert(img)
+    img = img.convert('1')
+
+    draw_to_display_and_sleep(img)
 
 if __name__ == '__main__':
     main()
+
+

@@ -29,21 +29,21 @@ def get_weather_data():
 def get_icon_for_code(code):
     icon_scale = 3
 
-    match code:
-        case 0:
-            return util.load_icon('data/image/sun.svg', icon_scale)
-        case 1 | 2 | 3:
-            return util.load_icon('data/image/cloud.svg', icon_scale)
-        case 51 | 53 | 55:
-            return util.load_icon('data/image/cloud-drizzle.svg', icon_scale)
-        case 61 | 63 | 65:
-            return util.load_icon('data/image/cloud-rain.svg', icon_scale)
-        case 71 | 73 | 75:
-            return util.load_icon('data/image/cloud-snow.svg', icon_scale)
-        case 95 | 96 | 99:
-            return util.load_icon('data/image/cloud-lightning.svg', icon_scale)
-        case _:
-            return util.load_icon('data/image/wi-na.svg', icon_scale)
+    # should be replaced with 'match' when python 3.10 is available
+    if code == 0:
+        return util.load_icon('data/image/sun.svg', icon_scale)
+    if code == 1 or code == 2 or code == 3:
+        return util.load_icon('data/image/cloud.svg', icon_scale)
+    if code == 51 or code == 53 or code == 55:
+        return util.load_icon('data/image/cloud-drizzle.svg', icon_scale)
+    if code == 61 or code == 63 or code == 65:
+        return util.load_icon('data/image/cloud-rain.svg', icon_scale)
+    if code == 71 or code == 73 or code == 75:
+        return util.load_icon('data/image/cloud-snow.svg', icon_scale)
+    if code == 95 or code == 96 or code == 99:
+        return util.load_icon('data/image/cloud-lightning.svg', icon_scale)
+
+    return util.load_icon('data/image/wi-na.svg', icon_scale)
 
 def parse_weather_data(data, day):
     daily = data['daily']
