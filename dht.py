@@ -11,8 +11,8 @@ import util
 #
 # where the pin is the pin of the dht data line
 #
-TEMP_PATH = '/sys/bus/iio/devices/iio\:device0/in_temp_input'
-HUMID_PATH = '/sys/bus/iio/devices/iio\:device0/in_humidityrelative_input'
+TEMP_PATH = r'/sys/bus/iio/devices/iio:device0/in_temp_input'
+HUMID_PATH = r'/sys/bus/iio/devices/iio:device0/in_humidityrelative_input'
 
 def read_file(filepath):
     try:
@@ -28,13 +28,15 @@ def get_dht_data():
     humid = 0.0
 
     try:
-        temp = int(read_file(TEMP_PATH)) / 10
+        temp = int(read_file(TEMP_PATH)) / 1000
     except ValueError:
+        print('temp could not be read')
         return { 'success' : False }
 
     try:
-        humid = int(read_file(HUMID_PATH)) / 10
+        humid = int(read_file(HUMID_PATH)) / 1000
     except ValueError:
+        print('humid could not be read')
         return { 'success' : False }
 
     return { 'success' : True, 'temp' : temp, 'humid' : humid }

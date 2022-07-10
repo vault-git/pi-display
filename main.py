@@ -5,6 +5,7 @@ import cairosvg
 from io import BytesIO
 from datetime import datetime
 from PIL import Image, ImageDraw, ImageOps
+import waveshare.epd7in5_V2 as epd7in5
 
 import util
 import constants as const
@@ -60,7 +61,7 @@ def main():
     img.paste(crypto_price.create_module(), MODULE_1_POS)
     img.paste(weather_data.create_module(), MODULE_2_POS)
 
-    img.show()
+    draw_to_display_and_sleep(img)
 
 if __name__ == '__main__':
     main()

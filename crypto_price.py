@@ -16,9 +16,13 @@ PARAMETERS = {
     'convert':'EUR'
 }
 
+def get_api_key():
+    with open('coinmarketcap-api-key') as f:
+        return f.read().rstrip('\n')
+
 HEADERS = {
     'Accepts': 'application/json',
-    'X-CMC_PRO_API_KEY': 'insert-api-key-here!!!',
+    'X-CMC_PRO_API_KEY': get_api_key(),
 }
 
 def get_crypto_price():
