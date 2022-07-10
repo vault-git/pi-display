@@ -31,6 +31,10 @@ def create_time_module():
 
     return module
 
+def draw_timestamp(draw, xy):
+    current_time = datetime.now()
+    draw.text(xy, current_time.strftime("%H:%M %d.%m.%y"), font=util.load_font(12))
+
 def draw_to_display_and_sleep(image):
     try:
         # init the display
@@ -60,6 +64,8 @@ def main():
     img.paste(dht.create_module(), MODULE_0_POS)
     img.paste(crypto_price.create_module(), MODULE_1_POS)
     img.paste(weather_data.create_module(), MODULE_2_POS)
+
+    draw_timestamp(draw, (700, 465))
 
     draw_to_display_and_sleep(img)
 
