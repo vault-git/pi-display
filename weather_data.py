@@ -28,19 +28,23 @@ def get_weather_data():
 
 def get_icon_for_code(code):
     icon_scale = 3
+    code = str(code)
 
-    # should be replaced with 'match' when python 3.10 is available
-    if code == 0:
+    if code in ('0.0'):
         return util.load_icon('data/image/sun.svg', icon_scale)
-    if code == 1 or code == 2 or code == 3:
+    if code in ('1.0', '2.0', '3.0'):
         return util.load_icon('data/image/cloud.svg', icon_scale)
-    if code == 51 or code == 53 or code == 55:
+    if code in ('45.0', '48.0'):
+        return util.load_icon('data/image/wi-fog.svg', icon_scale)
+    if code in ('51.0', '53.0', '55.0'):
         return util.load_icon('data/image/cloud-drizzle.svg', icon_scale)
-    if code == 61 or code == 63 or code == 65:
+    if code in ('61.0', '63.0', '65.0'):
         return util.load_icon('data/image/cloud-rain.svg', icon_scale)
-    if code == 71 or code == 73 or code == 75:
+    if code in ('71.0', '73.0', '75.0'):
         return util.load_icon('data/image/cloud-snow.svg', icon_scale)
-    if code == 95 or code == 96 or code == 99:
+    if code in ('80.0', '81.0', '82.0'):
+        return util.load_icon('data/image/wi-showers.svg', icon_scale)
+    if code in ('95.0', '96.0', '99.0'):
         return util.load_icon('data/image/cloud-lightning.svg', icon_scale)
 
     return util.load_icon('data/image/wi-na.svg', icon_scale)
@@ -64,40 +68,32 @@ def create_weather_image_day(daily_data):
     img.paste(today_icon, box=(15, 15), mask=today_icon)
 
     sunrise_icon = util.load_icon('data/image/sunrise.svg', 1)
-    img.paste(sunrise_icon, box=(150, 10), mask=sunrise_icon)
+    img.paste(sunrise_icon, box=(155, 10), mask=sunrise_icon)
     sunrise_time = datetime.fromisoformat(daily_data[2]).strftime('%H:%M')
-    draw.text((145, 50), sunrise_time, font=const.FONT_16)
+    draw.text((145, 50), sunrise_time, font=util.load_font(20))
 
     sunset_icon = util.load_icon('data/image/sunset.svg', 1)
-    img.paste(sunset_icon, box=(150, 80), mask=sunset_icon)
+    img.paste(sunset_icon, box=(155, 80), mask=sunset_icon)
     sunset_time = datetime.fromisoformat(daily_data[3]).strftime('%H:%M')
-    draw.text((145, 120), sunset_time, font=const.FONT_16)
+    draw.text((145, 120), sunset_time, font=util.load_font(20))
 
-    draw.text((5, 150), '{0}°C {1}°C'.format(str(daily_data[4]), str(daily_data[5])), font=const.FONT_26)
-
-    img = img.convert('L')
-    img = ImageOps.invert(img)
-    img = img.convert('1')
+    draw.text((5, 155), '{0}°C {1}°C'.format(str(daily_data[4]), str(daily_data[5])), font=util.load_font(26))
 
     return img
 
-def create_weather_image():
+def create_module():
     weather_data = get_weather_data()
 
     today_img = create_weather_image_day(parse_weather_data(weather_data, TODAY))
     tomorrow_img = create_weather_image_day(parse_weather_data(weather_data, TOMORROW))
     day_after_tomorrow_img = create_weather_image_day(parse_weather_data(weather_data, DAY_AFTER_TOMORROW))
 
-    img = Image.new('1', (800, 240), 0)
+    module = Image.new('1', (const.SCREEN_W, const.MODULE_H), 1)
 
-    img.paste(today_img, box=(20, 20))
-    img.paste(tomorrow_img, box=(tomorrow_img.width + 50, 20))
-    img.paste(day_after_tomorrow_img, box=(2 * day_after_tomorrow_img.width + 100, 20))
+    module.paste(today_img, box=(20, 20))
+    module.paste(tomorrow_img, box=(tomorrow_img.width + 50, 20))
+    module.paste(day_after_tomorrow_img, box=(2 * day_after_tomorrow_img.width + 100, 20))
 
-    # draw seperating lines between days
-    # draw = ImageDraw.Draw(img)
-    # dist = 10 # distance from border
-    # draw.line([(220, dist), (220, 200 - dist)], fill=1, width=1)
-    # draw.line([(450, dist), (450, 200 - dist)], fill=1, width=1)
+    module = ImageOps.expand(module, border=2)
 
-    return img
+    return module

@@ -2,34 +2,33 @@
 
 import sys
 import cairosvg
-import util
-import constants as const
-import weather_data as weather
-import waveshare.epd7in5_V2 as epd7in5
-
 from io import BytesIO
 from datetime import datetime
 from PIL import Image, ImageDraw, ImageOps
 
-def draw_ui(draw_context):
-    dist = 20
-    half_height = const.SCREEN_H / 2
-    half_width = const.SCREEN_W / 2
-    draw_context.line([(half_width, dist), (half_width, half_height)], fill=1, width=2)
-    draw_context.line([(dist, half_height), (const.SCREEN_W - dist, half_height)], fill=1, width=2)
+import util
+import constants as const
+import dht
+import weather_data
+import crypto_price
 
-def get_and_draw_time(draw_context, xy = (0, 0)):
+MODULE_0_POS = (0, 0)
+MODULE_1_POS = (400, 0)
+MODULE_2_POS = (0, 240)
+MODULE_3_POS = (400, 240)
+
+def create_time_module():
     current_time = datetime.now()
-    draw_context.text((xy[0], xy[1]), current_time.strftime("%H:%M"), font=const.FONT_56, fill=1)
-    draw_context.text((xy[0] + 7, xy[1] + 60), current_time.strftime("%d.%m.%y"), font=const.FONT_32, fill=1)
 
-def get_and_draw_dht_data(draw_context, xy = (0, 0)):
-    temp = 275 # comes from the sensor
-    humid = 455 # comes from the sensor
-    draw_context.text((xy[0], xy[1]),
-                      "{0}°C\n{1}%".format(temp / 10, humid / 10),
-                      font=const.FONT_40,
-                      fill=1)
+    module = Image.new('1', const.MODULE_SIZE, 1)
+    draw = ImageDraw.Draw(module)
+
+    draw.text((120, 70), current_time.strftime("%H:%M"), font=util.load_font(56))
+    draw.text((120 + 8, 70 + 60), current_time.strftime("%d.%m.%y"), font=util.load_font(32))
+
+    module = ImageOps.expand(module, border=2)
+
+    return module
 
 def draw_to_display_and_sleep(image):
     try:
@@ -52,23 +51,16 @@ def draw_to_display_and_sleep(image):
         epd7in5.epdconfig.module_exit()
         exit()
 
-
 def main():
-    img = Image.new('1', (epd7in5.EPD_WIDTH, epd7in5.EPD_HEIGHT), 0)
+    img = Image.new('1', (const.SCREEN_W, const.SCREEN_H), 1)
     draw = ImageDraw.Draw(img)
 
-    draw_ui(draw)
-    get_and_draw_time(draw, (120, 60))
-    get_and_draw_dht_data(draw, (530, 65))
-    img.paste(weather.create_weather_image(), box=(0, 250))
+    # all modules (except for weather) have the same size (400, 240)
+    img.paste(dht.create_module(), MODULE_0_POS)
+    img.paste(crypto_price.create_module(), MODULE_1_POS)
+    img.paste(weather_data.create_module(), MODULE_2_POS)
 
-    img = img.convert('L')
-    img = ImageOps.invert(img)
-    img = img.convert('1')
-
-    draw_to_display_and_sleep(img)
+    img.show()
 
 if __name__ == '__main__':
     main()
-
-
