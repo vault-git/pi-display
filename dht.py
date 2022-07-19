@@ -71,18 +71,18 @@ def update_and_get_min_max_values(dht_data):
                 temp['min_t'] = dht_data['timestamp']
 
             if (dht_data['temp'] > temp['max'] or
-                has_isoformat_date_changed(temp['min_t'], dht_data['timestamp'])):
+                has_isoformat_date_changed(temp['max_t'], dht_data['timestamp'])):
                 temp['max'] = dht_data['temp']
                 temp['max_t'] = dht_data['timestamp']
 
             humid = dhtjson['humid']
             if (dht_data['humid'] < humid['min'] or
-                has_isoformat_date_changed(temp['min_t'], dht_data['timestamp'])):
+                has_isoformat_date_changed(humid['min_t'], dht_data['timestamp'])):
                 humid['min'] = dht_data['temp']
                 humid['min_t'] = dht_data['timestamp']
 
             if (dht_data['humid'] > humid['max'] or
-                has_isoformat_date_changed(temp['min_t'], dht_data['timestamp'])):
+                has_isoformat_date_changed(humid['max_t'], dht_data['timestamp'])):
                 humid['max'] = dht_data['humid']
                 humid['max_t'] = dht_data['timestamp']
 

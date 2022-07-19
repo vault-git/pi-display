@@ -33,21 +33,21 @@ def get_icon_for_code(code):
     code = str(code)
 
     if code in ('0.0'):
-        return util.load_icon('data/image/sun.svg', icon_scale)
+        return util.load_icon('data/image/wi-day-sunny.svg', icon_scale)
     if code in ('1.0', '2.0', '3.0'):
         return util.load_icon('data/image/wi-day-cloudy.svg', icon_scale)
     if code in ('45.0', '48.0'):
         return util.load_icon('data/image/wi-fog.svg', icon_scale)
     if code in ('51.0', '53.0', '55.0'):
-        return util.load_icon('data/image/cloud-drizzle.svg', icon_scale)
+        return util.load_icon('data/image/wi-sprinkle.svg', icon_scale)
     if code in ('61.0', '63.0', '65.0'):
-        return util.load_icon('data/image/cloud-rain.svg', icon_scale)
+        return util.load_icon('data/image/wi-rain-mix.svg', icon_scale)
     if code in ('71.0', '73.0', '75.0'):
-        return util.load_icon('data/image/cloud-snow.svg', icon_scale)
+        return util.load_icon('data/image/wi-snow.svg', icon_scale)
     if code in ('80.0', '81.0', '82.0'):
         return util.load_icon('data/image/wi-showers.svg', icon_scale)
     if code in ('95.0', '96.0', '99.0'):
-        return util.load_icon('data/image/cloud-lightning.svg', icon_scale)
+        return util.load_icon('data/image/wi-storm-showers.svg', icon_scale)
 
     return util.load_icon('data/image/wi-na.svg', icon_scale)
 
