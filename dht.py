@@ -78,7 +78,7 @@ def update_and_get_min_max_values(dht_data):
             humid = dhtjson['humid']
             if (dht_data['humid'] < humid['min'] or
                 has_isoformat_date_changed(humid['min_t'], dht_data['timestamp'])):
-                humid['min'] = dht_data['temp']
+                humid['min'] = dht_data['humid']
                 humid['min_t'] = dht_data['timestamp']
 
             if (dht_data['humid'] > humid['max'] or
