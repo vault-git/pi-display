@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from PIL import Image, ImageDraw, ImageOps
-from requests import Request, Session
+from requests import Session
 from requests.exceptions import ConnectionError, Timeout, TooManyRedirects
 import json
 

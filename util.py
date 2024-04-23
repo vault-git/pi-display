@@ -2,7 +2,7 @@
 
 import cairosvg
 from io import BytesIO
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageFont
 
 def load_icon(icon_path, scale):
     out = BytesIO()
@@ -10,4 +10,4 @@ def load_icon(icon_path, scale):
     return Image.open(out)
 
 def load_font(size):
-    return ImageFont.truetype("data/fonts/RobotoMono-Regular.ttf", size)
+    return ImageFont.truetype("data/fonts/FiraCode.ttf", size)
