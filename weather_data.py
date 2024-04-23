@@ -70,7 +70,7 @@ def create_current_image(data):
     draw = ImageDraw.Draw(img)
 
     draw.text((0, 40), '{:.0f}°'.format(data[0]).center(8), font=util.load_font(48))
-    draw.text((0, 140), '{:.0f}km/h'.format(data[1]).center(8), font=util.load_font(44))
+    draw.text((0, 140), '{:.0f} km/h'.format(data[1]).center(10), font=util.load_font(38))
 
     return img
 

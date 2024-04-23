@@ -8,7 +8,7 @@ import weather_data
 import crypto_price
 
 MODULE_0_POS = (0, 0)
-MODULE_1_POS = (400, 0)
+MODULE_1_POS = (350, 0)
 MODULE_2_POS = (0, 240)
 MODULE_3_POS = (400, 240)
 
@@ -24,7 +24,7 @@ def create_image():
     ImageDraw.Draw(img).text((675, 465), datetime.now().strftime("%H:%M %d.%m.%y"), font=util.load_font(14))
 
     # for changing and testing image creation
-    # img.save("test.png")
+    img.save("output.png")
 
     return img
 
