@@ -51,7 +51,7 @@ def create_module():
 
     if dht_data['success'] == True:
         draw.text((0, 55), '{}°'.format(dht_data['temp']).center(13), font=util.load_font(50))
-        draw.text((0, 80), '{}%'.format(dht_data['humid']).center(13), font=util.load_font(50))
+        draw.text((0, 120), '{}%'.format(dht_data['humid']).center(13), font=util.load_font(50))
     else:
         draw.text((30, 100), 'Could not gather dht data!', font=util.load_font(20))
 
