@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 
-from PIL import Image, ImageDraw, ImageOps
+import json
+
+from PIL import Image, ImageDraw
 from requests import Session
 from requests.exceptions import ConnectionError, Timeout, TooManyRedirects
-import json
 
 import constants as const
 import util
@@ -25,7 +26,7 @@ HEADERS = {
     'X-CMC_PRO_API_KEY': get_api_key(),
 }
 
-def get_crypto_price():
+def get_crypto_values():
     session = Session()
     session.headers.update(HEADERS)
 
@@ -49,32 +50,32 @@ def get_crypto_price():
 
         return prices
 
-    except (ConnectionError, Timeout, TooManyRedirects) as e:
-        return ''
+    except (ConnectionError, Timeout, TooManyRedirects):
+        return {}
 
 # creates the crypto_price 'module' that can be pasted to the main image
 def create_module():
     module = Image.new('1', const.MODULE_SIZE, 1)
     draw = ImageDraw.Draw(module)
 
-    btc_icon = util.load_icon('data/image/bitcoin-icon.svg', 0.5)
-    eth_icon = util.load_icon('data/image/ethereum-icon.svg', 0.5)
+    btc_icon = util.load_icon('data/image/bitcoin-icon.svg', 0.4)
+    eth_icon = util.load_icon('data/image/ethereum-icon.svg', 0.4)
 
-    crypto_data = get_crypto_price()
+    crypto_data = get_crypto_values()
 
-    module.paste(btc_icon, box=(20, 30), mask=btc_icon)
-    draw.text((95, 40), '{:6d}€'.format(int(crypto_data['Bitcoin'][0])), font=util.load_font(30))
-    draw.text((270, 20), '{:.2f}%'.format(crypto_data['Bitcoin'][1]), font=util.load_font(20))
-    draw.text((270, 50), '{:.2f}%'.format(crypto_data['Bitcoin'][2]), font=util.load_font(20))
-    draw.text((270, 80), '{:.2f}%'.format(crypto_data['Bitcoin'][3]), font=util.load_font(20))
+    if 'Bitcoin' in crypto_data :
+        bitcoin = crypto_data['Bitcoin']
+        module.paste(btc_icon, box=(80, 17), mask=btc_icon)
+        draw.text((140, 25), '{:.0f}€'.format(bitcoin[0]).center(10), font=util.load_font(34))
 
-    module.paste(eth_icon, box=(20, 140), mask=eth_icon)
-    draw.text((95, 150), '{:6d}€'.format(int(crypto_data['Ethereum'][0])), font=util.load_font(30))
-    draw.text((270, 130), '{:.2f}%'.format(crypto_data['Ethereum'][1]), font=util.load_font(20))
-    draw.text((270, 160), '{:.2f}%'.format(crypto_data['Ethereum'][2]), font=util.load_font(20))
-    draw.text((270, 190), '{:.2f}%'.format(crypto_data['Ethereum'][3]), font=util.load_font(20))
+        draw.text((0, 80), '24h: {:.1f}%  7d: {:.1f}%  90d: {:.1f}%'.format(bitcoin[1], bitcoin[2], bitcoin[3]), font=util.load_font(20))
 
-    # add a border to the image
-    module = ImageOps.expand(module, border=2)
+    if 'Ethereum' in crypto_data :
+        ethereum = crypto_data['Ethereum']
+        module.paste(eth_icon, box=(80, 125), mask=eth_icon)
+
+        draw.text((140, 132), '{:.0f}€'.format(ethereum[0]).center(10), font=util.load_font(34))
+
+        draw.text((0, 185), '24h: {:.1f}%  7d: {:.1f}%  90d: {:.1f}%'.format(ethereum[1], ethereum[2], ethereum[3]), font=util.load_font(20))
 
     return module

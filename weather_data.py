@@ -6,7 +6,7 @@ import util
 import logging
 import constants as const
 from datetime import datetime
-from PIL import Image, ImageDraw, ImageOps
+from PIL import Image, ImageDraw
 
 TODAY = 0
 TOMORROW = 1
@@ -70,7 +70,7 @@ def create_current_image(data):
     draw = ImageDraw.Draw(img)
 
     draw.text((0, 40), '{:.0f}°'.format(data[0]).center(8), font=util.load_font(48))
-    draw.text((0, 140), '{:.0f}km/h'.format(data[1]).center(8), font=util.load_font(46))
+    draw.text((0, 140), '{:.0f}km/h'.format(data[1]).center(8), font=util.load_font(44))
 
     return img
 
@@ -101,7 +101,5 @@ def create_module():
     module.paste(tomorrow_img, box=(2 * DAILY_IMG_W, 0))
     module.paste(day_after_tomorrow_img, box=(3 * DAILY_IMG_W, 0))
     module.paste(current_img, box=(0, 0))
-
-    module = ImageOps.expand(module, border=1)
 
     return module

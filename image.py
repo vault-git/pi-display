@@ -21,7 +21,7 @@ def create_image():
     img.paste(weather_data.create_module(), MODULE_2_POS)
 
     # draws timestamp in the bottom right
-    ImageDraw.Draw(img).text((700, 465), datetime.now().strftime("%H:%M %d.%m.%y"), font=util.load_font(12))
+    ImageDraw.Draw(img).text((675, 465), datetime.now().strftime("%H:%M %d.%m.%y"), font=util.load_font(14))
 
     # for changing and testing image creation
     # img.save("test.png")
