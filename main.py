@@ -27,8 +27,8 @@ def main():
         logging.info('starting in testmode...')
         image.create_image(config).save("output.png")
     else:
-        import waveshare
-        waveshare.draw_to_display_and_sleep(image.create_image(config))
+        import display
+        display.draw_to_display_and_sleep(image.create_image(config))
 
 if __name__ == '__main__':
     main()
