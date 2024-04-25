@@ -14,12 +14,22 @@ DAY_AFTER_TOMORROW = 2
 
 DAILY_IMG_W = 200
 
-WEATHER_API_URL = "https://api.open-meteo.com/v1/forecast?latitude=49.13&longitude=12.39&current=temperature_2m,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=Europe%2FBerlin&forecast_days=3"
+WEATHER_API_URL = "https://api.open-meteo.com/v1/forecast"
+
+def get_parameters(location):
+    return {
+            'latitude':location[0],
+            'longitude':location[1],
+            'current':'temperature_2m,wind_speed_10m',
+            'daily':'weather_code,temperature_2m_max,temperature_2m_min',
+            'timezone':'Europe/Berlin',
+            'forecast_days':'3'
+            }
 
 # tries to get the weather data from the open-meteo API
-def get_weather_data():
+def get_weather_data(location):
     try:
-        result = requests.get(WEATHER_API_URL)
+        result = requests.get(WEATHER_API_URL, get_parameters(location))
         result.raise_for_status() # raises exception when http status code is error
 
         return result.json()
@@ -78,7 +88,7 @@ def create_daily_image(data):
     img = Image.new('1', (DAILY_IMG_W, const.MODULE_H), 1)
     draw = ImageDraw.Draw(img)
 
-    draw.text((0, 20), datetime.strptime(data[0], '%Y-%m-%d').strftime('%A').center(16), font=util.load_font(20))
+    draw.text((0, 10), datetime.strptime(data[0], '%Y-%m-%d').strftime('%A').center(16), font=util.load_font(20))
 
     today_icon = get_icon_for_code(data[1])
     img.paste(today_icon, box=(42, 40), mask=today_icon)
@@ -87,8 +97,8 @@ def create_daily_image(data):
 
     return img
 
-def create_module():
-    weather_data = get_weather_data()
+def create_module(config):
+    weather_data = get_weather_data(config['location'])
 
     current_img = create_current_image(parse_current_weather(weather_data))
     today_img = create_daily_image(parse_daily_weather(weather_data, TODAY))

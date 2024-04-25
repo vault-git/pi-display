@@ -129,5 +129,5 @@ dmypy.json
 .pyre/
 
 # api key
-coinmarketcap-api-key
+test.sh
 output.png

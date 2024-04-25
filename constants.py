@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-#
+
 SCREEN_W = 800
 SCREEN_H = 480
 

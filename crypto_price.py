@@ -17,18 +17,12 @@ PARAMETERS = {
     'convert':'EUR'
 }
 
-def get_api_key():
-    with open('coinmarketcap-api-key') as f:
-        return f.read().rstrip('\n')
-
-HEADERS = {
-    'Accepts': 'application/json',
-    'X-CMC_PRO_API_KEY': get_api_key(),
-}
-
-def get_crypto_values():
+def get_crypto_values(api_key):
     session = Session()
-    session.headers.update(HEADERS)
+    session.headers.update({
+                'Accepts': 'application/json',
+                'X-CMC_PRO_API_KEY': api_key,
+    })
 
     try:
         response = session.get(COINMARKETCAP_API, params=PARAMETERS)
@@ -54,14 +48,14 @@ def get_crypto_values():
         return {}
 
 # creates the crypto_price 'module' that can be pasted to the main image
-def create_module():
+def create_module(config):
     module = Image.new('1', (const.MODULE_W + 100, const.MODULE_H), 1)
     draw = ImageDraw.Draw(module)
 
     btc_icon = util.load_icon('data/image/bitcoin-icon.svg', 0.4)
     eth_icon = util.load_icon('data/image/ethereum-icon.svg', 0.4)
 
-    crypto_data = get_crypto_values()
+    crypto_data = get_crypto_values(config['api_key'])
 
     if 'Bitcoin' in crypto_data :
         bitcoin = crypto_data['Bitcoin']
