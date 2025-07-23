@@ -47,17 +47,19 @@ def get_dht_data():
 
 # creates the dht 'module' that can be pasted to the main image
 def create_module(config):
-    dht_data = get_dht_data()
-
     module = Image.new('1', (const.MODULE_W - 80, const.MODULE_H), 1)
     draw = ImageDraw.Draw(module)
+
+    if config['test_mode']:
+        draw.text((0, 55), '{}°'.format(23.4).center(11), font=util.load_font(50))
+        draw.text((0, 120), '{}%'.format(44.2).center(11), font=util.load_font(50))
+        return module
+
+    dht_data = get_dht_data()
 
     if dht_data['success'] == True:
         draw.text((0, 55), '{}°'.format(dht_data['temp']).center(11), font=util.load_font(50))
         draw.text((0, 120), '{}%'.format(dht_data['humid']).center(11), font=util.load_font(50))
-    elif config['test_mode']:
-        draw.text((0, 55), '{}°'.format(23.4).center(11), font=util.load_font(50))
-        draw.text((0, 120), '{}%'.format(44.2).center(11), font=util.load_font(50))
     else:
         draw.text((10, 100), 'Could not gather dht data!', font=util.load_font(20))
 

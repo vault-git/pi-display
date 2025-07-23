@@ -98,7 +98,12 @@ def create_daily_image(data):
     return img
 
 def create_module(config):
-    weather_data = get_weather_data(config['location'])
+    location = config['location']
+
+    if config['test_mode']:
+        location = (48.1549958,11.4594364) # munich
+
+    weather_data = get_weather_data(location)
 
     current_img = create_current_image(parse_current_weather(weather_data))
     today_img = create_daily_image(parse_daily_weather(weather_data, TODAY))

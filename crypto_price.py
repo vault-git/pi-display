@@ -55,6 +55,16 @@ def create_module(config):
     btc_icon = util.load_icon('data/image/bitcoin-icon.svg', 0.4)
     eth_icon = util.load_icon('data/image/ethereum-icon.svg', 0.4)
 
+    if config['test_mode']:
+        module.paste(btc_icon, box=(100, 17), mask=btc_icon)
+        draw.text((140, 20), '{:.0f}€'.format(100000).center(10), font=util.load_font(38))
+        draw.text((0, 80), '24h: {:.1f}%  7d: {:.1f}%  90d: {:.1f}%'.format(-10.0, 10.0, 20.5), font=util.load_font(22))
+        module.paste(eth_icon, box=(100, 130), mask=eth_icon)
+        draw.text((140, 135), '{:.0f}€'.format(3000).center(10), font=util.load_font(38))
+        draw.text((0, 190), '24h: {:.1f}%  7d: {:.1f}%  90d: {:.1f}%'.format(15.4, 12.3, -10.2), font=util.load_font(22))
+
+        return module
+
     crypto_data = get_crypto_values(config['api_key'])
 
     if 'Bitcoin' in crypto_data :

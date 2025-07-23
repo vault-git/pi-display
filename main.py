@@ -9,10 +9,10 @@ def main():
             prog='pi-display',
             description='Create an image with weather data')
 
-    parser.add_argument('-t', '--test', action='store_true', dest='test_mode', help='run the script in test mode')
-    parser.add_argument('-a', '--api-key', dest='api_key', required=True, help='coinmarketcap api-key')
-    parser.add_argument('-lat', '--latitude', dest='latitude', required=True, help='latitude')
-    parser.add_argument('-lon', '--longitude', dest='longitude', required=True, help='longitude')
+    parser.add_argument('-t', '--test', action='store_true', dest='test_mode', help='Run the script in test mode')
+    parser.add_argument('-a', '--api-key', dest='api_key', help='Coinmarketcap API-KEY')
+    parser.add_argument('-lat', '--latitude', dest='latitude', help='Latitude for weather forecast')
+    parser.add_argument('-lon', '--longitude', dest='longitude', help='Longitude for weather forecast')
 
     args = parser.parse_args()
 
@@ -23,7 +23,7 @@ def main():
     }
 
     if args.test_mode:
-        # for testing image creation
+        # for test image creation
         logging.info('starting in testmode...')
         image.create_image(config).save("output.png")
     else:
