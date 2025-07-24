@@ -4,6 +4,7 @@ import waveshare.epd7in5_V2 as epd7in5
 
 import logging
 
+
 def draw_to_display_and_sleep(image):
     try:
         # init the display
@@ -22,5 +23,4 @@ def draw_to_display_and_sleep(image):
 
     except KeyboardInterrupt:
         logging.info("ctrl + c:")
-        epd7in5.epdconfig.module_exit()
         exit()
