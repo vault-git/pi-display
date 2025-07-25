@@ -29,9 +29,17 @@ def read_file(filepath):
             return f.read()
 
 
-def get_dht_data():
+def get_dht_data(config):
     temp = 0.0
     humid = 0.0
+
+    if config["test_mode"]:
+        return {
+            "success": True,
+            "temp": 22.5,
+            "humid": 65.1,
+            "timestamp": datetime.now().isoformat(),
+        }
 
     try:
         temp = int(read_file(TEMP_PATH)) / 1000
@@ -55,23 +63,15 @@ def get_dht_data():
 
 # creates the dht 'module' that can be pasted to the main image
 def create_module(config):
-    module = Image.new("1", (const.MODULE_W - 200, const.MODULE_H), 1)
+    module = Image.new("1", (260, const.MODULE_H), 1)
     draw = ImageDraw.Draw(module)
 
-    if config["test_mode"]:
-        draw.text((0, 55), " {}°".format(23.4).center(11), font=util.load_font(50))
-        draw.text((0, 120), " {}%".format(44.2).center(11), font=util.load_font(50))
-        return module
-
-    dht_data = get_dht_data()
+    dht_data = get_dht_data(config)
 
     if dht_data["success"]:
         draw.text(
-            (0, 55), "{}°".format(dht_data["temp"]).center(11), font=util.load_font(50)
-        )
-        draw.text(
-            (0, 120),
-            "{}%".format(dht_data["humid"]).center(11),
+            xy=(38, 80),
+            text=" {}°\n {}%".format(dht_data["temp"], dht_data["humid"]),
             font=util.load_font(50),
         )
     else:

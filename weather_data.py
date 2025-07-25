@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import logging
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import requests
 from PIL import Image, ImageDraw
@@ -14,7 +14,7 @@ DAILY_IMG_H = 300
 TODAYS_IMG_W = 500
 DAY_HOUR_DISTANCE = 124
 
-WEATHER_API_URL = "https://api.open-meteo.com/v1/forecast"
+WEATHER_API_URL = "https://api.open-meteo.com/v1/dwd-icon"
 
 TEMP = "temperature_2m"
 TEMP_MIN = "temperature_2m_min"
@@ -30,7 +30,7 @@ def get_parameters(location):
     return {
         "latitude": location[0],
         "longitude": location[1],
-        "current": "temperature_2m,wind_speed_10m,weather_code,uv_index",
+        "current": "temperature_2m,wind_speed_10m,weather_code,relative_humidity_2m",
         "hourly": "temperature_2m,weather_code,precipitation_probability,rain,uv_index",
         "daily": "weather_code,temperature_2m_max,temperature_2m_min",
         "timezone": "Europe/Berlin",
@@ -97,16 +97,17 @@ def create_current_weather_image(weather_data):
         font=util.load_font(74),
     )
     draw.text(
-        xy=(30, 150),
-        text="{:.0f} \n{:.0f} 󰖨".format(
-            weather_data["current"][WIND_SPEED], weather_data["current"][UV_INDEX]
-        ),
-        font=util.load_font(42),
-    )
-    draw.text(
-        xy=(110, -30),
+        xy=(110, -55),
         text=wmo_code_to_icon(weather_data["current"][WMO_CODE]),
         font=util.load_font(320),
+    )
+    draw.text(
+        xy=(30, 170),
+        text="{} \n{} ".format(
+            weather_data["current"][WIND_SPEED],
+            weather_data["current"]["relative_humidity_2m"],
+        ),
+        font=util.load_font(42),
     )
 
     return img
@@ -152,15 +153,10 @@ def create_todays_weather_image(weather_data):
     img = Image.new("1", (TODAYS_IMG_W, const.MODULE_H), 1)
     x = 0
 
-    for index in [0, 2, 2, 2]:
-        new_hour = dt.hour + index
-
-        if new_hour > 23:
-            new_hour = 0
-
-        dt = dt.replace(hour=new_hour)
-        first_hour_img = todays_weather_hour(weather_data, dt)
-        img.paste(im=first_hour_img, box=(x, 0))
+    for hours in [0, 2, 2, 2]:
+        dt = dt + timedelta(hours=hours)
+        hour_data_img = todays_weather_hour(weather_data, dt)
+        img.paste(im=hour_data_img, box=(x, 0))
 
         x += DAY_HOUR_DISTANCE
 
@@ -207,7 +203,7 @@ def create_daily_image(data):
 def create_module(config):
     location = config["location"]
 
-    if config["test_mode"]:
+    if config["test_mode"] and len(config["location"]) == 0:
         location = (48.1549958, 11.4594364)  # munich
 
     weather_data = get_weather_data(location)
