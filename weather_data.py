@@ -62,7 +62,7 @@ def wmo_code_to_icon(code):
     if code in ("1", "2", "3"):  # Mainly clear, partly cloudy, and overcast
         return ""
     if code in ("45", "48"):  # Fog and depositing rime fog
-        return "󰖑"
+        return ""
     if code in ("51", "53", "55"):  # Drizzle: Light, moderate, and dense intensity
         return ""
     if code in ("56", "57"):  # Freezing Drizzle: Light and dense intensity
@@ -103,7 +103,7 @@ def create_current_weather_image(weather_data):
     )
     draw.text(
         xy=(30, 170),
-        text="{} \n{} ".format(
+        text=" {:.0f} km/h\n {} %".format(
             weather_data["current"][WIND_SPEED],
             weather_data["current"]["relative_humidity_2m"],
         ),
@@ -218,8 +218,8 @@ def create_module(config):
 
     module.paste(im=current_img, box=(0, 0))
     module.paste(im=today_img, box=(300, 0))
-    module.paste(im=day2_img, box=(240, 250))
-    module.paste(im=day3_img, box=(430, 250))
-    module.paste(im=day4_img, box=(620, 250))
+    module.paste(im=day2_img, box=(250, 250))
+    module.paste(im=day3_img, box=(440, 250))
+    module.paste(im=day4_img, box=(630, 250))
 
     return module
