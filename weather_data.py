@@ -30,7 +30,7 @@ def get_parameters(location):
     return {
         "latitude": location[0],
         "longitude": location[1],
-        "current": "temperature_2m,wind_speed_10m,weather_code,relative_humidity_2m",
+        "current": "is_day,temperature_2m,wind_speed_10m,weather_code,relative_humidity_2m",
         "hourly": "temperature_2m,weather_code,precipitation_probability,rain,uv_index",
         "daily": "weather_code,temperature_2m_max,temperature_2m_min",
         "timezone": "Europe/Berlin",
@@ -54,13 +54,13 @@ def get_weather_data(location):
         logging.error("weather API returned error code")
 
 
-def wmo_code_to_icon(code):
+def wmo_code_to_icon(code, is_day):
     code = str(code)
 
     if code in ("0"):  # Clear sky
-        return "󰖨"
+        return "󰖨" if is_day else ""
     if code in ("1", "2", "3"):  # Mainly clear, partly cloudy, and overcast
-        return ""
+        return "" if is_day else ""
     if code in ("45", "48"):  # Fog and depositing rime fog
         return ""
     if code in ("51", "53", "55"):  # Drizzle: Light, moderate, and dense intensity
@@ -80,9 +80,9 @@ def wmo_code_to_icon(code):
     if code in ("85", "86"):  # Snow showers slight and heavy
         return ""
     if code in ("95"):  # Thunderstorm: Slight or moderate
-        return ""
+        return "" if is_day else ""
     if code in ("96", "99"):  # Thunderstorm with slight and heavy hail
-        return ""
+        return "" if is_day else ""
 
     return ""
 
@@ -98,7 +98,9 @@ def create_current_weather_image(weather_data):
     )
     draw.text(
         xy=(110, -55),
-        text=wmo_code_to_icon(weather_data["current"][WMO_CODE]),
+        text=wmo_code_to_icon(
+            weather_data["current"][WMO_CODE], weather_data["current"]["is_day"]
+        ),
         font=util.load_font(320),
     )
     draw.text(
@@ -125,9 +127,12 @@ def todays_weather_hour(weather_data, dt):
 
     index = weather_data["hourly"]["time"].index(dt.isoformat(timespec="minutes"))
 
+    def is_day(dt):
+        return dt.hour >= 6 and dt.hour <= 20
+
     draw.text(
         xy=(0, -5),
-        text=wmo_code_to_icon(weather_data["hourly"][WMO_CODE][index]),
+        text=wmo_code_to_icon(weather_data["hourly"][WMO_CODE][index], is_day(dt)),
         font=util.load_font(220),
     )
 
@@ -187,7 +192,7 @@ def create_daily_image(data):
 
     draw.text(
         xy=(10, -40),
-        text=wmo_code_to_icon(data[1]),
+        text=wmo_code_to_icon(data[1], True),
         font=util.load_font(280),
     )
 
